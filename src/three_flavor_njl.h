@@ -50,6 +50,12 @@ struct phi_eqs_params {
     double mu_s;
 };
 
+struct M_phi_eqs_params {
+    double M_u;
+    double M_d;
+    double M_s;
+};
+
 // Function declarations
 double OmegaMf_integrand(double p, void* params_ptr);
 double OmegaMf(double T, double mu_f, double Mf);
@@ -62,6 +68,9 @@ int phi_eqs(const gsl_vector* v, void* params, gsl_vector* f);
 double solv_phi_eq(double T, double mu[3], double (*phi)[3]);
 double Omega(double T, double mu[3]);
 double pressure(double T, double mu[3]);
-void calc_M(double phi_sol[3], double(* M_sol)[3]);
+int calc_M(double phi_sol[3], double(* M_sol)[3]);
+int calc_phi(double M_sol[3], double(* phi_sol)[3]);
+double solv_gap_eq_multi_guess(double T, double mu[3], double(* M)[3]);
+int calc_phi_multi_guess(double T, double mu[3], double M_sol[3], double(* phi_sol)[3]);
 
 #endif /* THREE_FLAVOR_NJL_H */

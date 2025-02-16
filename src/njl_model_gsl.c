@@ -165,7 +165,7 @@ int solve_system(double T, double mu, double* M_sol, double* mu_tilde_sol) {
         double M = guesses[k][0];
         double mu_tilde = guesses[k][1];
         double d = H; // step size for finite differences
-        for (int iter = 0; iter < 100; iter++) {
+        for (int iter = 0; iter < 100; ++iter) {
             double F[2];
             F[0] = dOmegadM(T, mu, M, mu_tilde);
             F[1] = dOmegadmutilde(T, mu, M, mu_tilde);
