@@ -11,7 +11,7 @@ const double Nf = 3.0;     // Number of flavors
 const double Nc = 3.0;     // Number of colors
 const double HBARC = 0.17;
 const double RHO0 = 197.3269804;
-const double H = 1e-12;
+const double H = 1e-4;
 const int WORKSPACE_SIZE = 5000;
 const int NUM_SETS = 128;
 
@@ -316,9 +316,9 @@ int calc_phi(double M_sol[3], double(* phi_sol)[3]) {
     };
     // Solver setup
     gsl_vector* phi_vec = gsl_vector_alloc(3);
-    gsl_vector_set(phi_vec, 0, 0.0);
-    gsl_vector_set(phi_vec, 1, 0.0);
-    gsl_vector_set(phi_vec, 2, 0.0);
+    gsl_vector_set(phi_vec, 0, 7.226774675685889e7);
+    gsl_vector_set(phi_vec, 1, 7.226774675685889e7);
+    gsl_vector_set(phi_vec, 2, 7.226774675685889e7);
     gsl_multiroot_function f = {&M_phi_eqs, 3, &params};
     // Select solver (hybrid method)
     gsl_multiroot_fsolver* solver = gsl_multiroot_fsolver_alloc(gsl_multiroot_fsolver_hybrids, 3);
@@ -373,7 +373,7 @@ double solv_gap_eq_multi_guess(double T, double mu[3], double(* M)[3]) {
     double M_u_guess[2];
     double M_d_guess[2];
     double M_s_guess[2];
-    if ((mu[0] + mu[1] + mu[2]) / 3.0 < 360.0) {
+    if ((mu[0] + mu[1] + mu[2]) / 3.0 < 361.0) {
         double M_u_guess_init[2] = {367.6, 52.5};
         double M_d_guess_init[2] = {367.6, 52.5};
         double M_s_guess_init[2] = {549.5, 464.4};
@@ -400,7 +400,7 @@ double solv_gap_eq_multi_guess(double T, double mu[3], double(* M)[3]) {
     int status;
     gsl_multiroot_function f = {&gap_eqs, 3, &params};
     // Select solver (hybrid method)
-    gsl_multiroot_fsolver *solver = gsl_multiroot_fsolver_alloc(gsl_multiroot_fsolver_hybrids, 3);
+    gsl_multiroot_fsolver *solver = gsl_multiroot_fsolver_alloc(gsl_multiroot_fsolver_dnewton, 3);
     if (!solver) {
         fprintf(stderr, "Failed to allocate solver at gap_eq_multi_guess\n");
         return -1;
@@ -426,21 +426,24 @@ double solv_gap_eq_multi_guess(double T, double mu[3], double(* M)[3]) {
                 //printf("Stop when params. are T=%lf, mu[0]=%lf, i=%d\n", T,mu[0],i);
                 break;
             }
-            status = gsl_multiroot_test_delta(solver->dx, solver->x, H*H, H*H);
+            status = gsl_multiroot_test_delta(solver->dx, solver->x, H, H);
         } while (status == GSL_CONTINUE && iter < 5000);
         M_tmp[0] = gsl_vector_get(solver->x, 0);
         M_tmp[1] = gsl_vector_get(solver->x, 1);
         M_tmp[2] = gsl_vector_get(solver->x, 2);
-        calc_phi_multi_guess(T, mu, M_tmp, &phi_tmp);
+        calc_phi(M_tmp, &phi_tmp);
+        // calc_phi_multi_guess(T, mu, M_tmp, &phi_tmp);
         // Check consistency.
+        /*
         double M_check[3];
         calc_M(phi_tmp, &M_check);
         if (fabs(M_tmp[2] - M_check[2]) > 1.0) {
             printf("Phi is inconsistent: Ms_tmp=%lf, Ms_check=%lf\n", M_tmp[2], M_check[2]);
         }
+        */
         // Check the Omega
         Omega_tmp = Omega_temp(T, mu, phi_tmp);
-        printf("Compare Omega: Omega_tmp=%lf, phi_tmp[0]=%lf, for M_u=%lf at mu[0]=%lf\n",Omega_tmp,phi_tmp[0],M_tmp[0],mu[0]);
+        //printf("Compare Omega: Omega_tmp=%lf, phi_tmp[0]=%lf, for M_u=%lf at mu[0]=%lf\n",Omega_tmp,phi_tmp[0],M_tmp[0],mu[0]);
         //printf("Strange Mass at mu[2]=%lf, id=%d: %lf\n", mu[2], i, M_tmp[2]);
         if (Omega_tmp <= Omega_best) {
             Omega_best = Omega_tmp;
@@ -502,7 +505,7 @@ int calc_phi_multi_guess(double T, double mu[3], double M_sol[3], double(* phi_s
         if (status) {
             break;
         }  
-        status = gsl_multiroot_test_delta(solver->dx, solver->x, H*H, H*H);
+        status = gsl_multiroot_test_delta(solver->dx, solver->x, H, H);
     } while (status == GSL_CONTINUE && iter < 5000);
     phi_tmp[0] = gsl_vector_get(solver->x, 0);
     phi_tmp[1] = gsl_vector_get(solver->x, 1);

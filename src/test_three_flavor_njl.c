@@ -22,7 +22,7 @@ void initialize_parameters(int param_set) {
 }
 
 int main() {
-    initialize_parameters(1);
+    initialize_parameters(0);
 
     double T = 1.0;  // Temperature (MeV)
     double mu_start = 2e2;  // Starting chemical potential (MeV)
