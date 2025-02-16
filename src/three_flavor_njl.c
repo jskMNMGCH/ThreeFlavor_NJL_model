@@ -624,14 +624,15 @@ double solv_gap_eq_multi_guess_solver_restrict(double T, double mu[3], double(* 
         .mu_s = mu[2]
     };
 
-    // Upper bounds when mu={0.0, 0.0, 0.0}
+    // Upper bounds when Temperature=T, mu={0.0, 0.0, 0.0}
     double upper_bound[3];
     double mu_vac[3] = {0.0, 0.0, 0.0};
     solv_gap_eq_multi_guess_solver(T, mu_vac, &upper_bound);
-    // Middle masses when mu={3.8e2, 3.8e2, 3.8e2}
+    
+    // Middle masses
     double middle_mass[3];
     double mu_middle[3] = {4e2, 4e2, 4e2};
-    solv_gap_eq_multi_guess_solver(T, mu_middle, &middle_mass);
+    solv_gap_eq_multi_guess_solver(1.0, mu_middle, &middle_mass);
     
     double M_u_guess[] = {upper_bound[0], middle_mass[0], 2.0*m[0]};
     double M_d_guess[] = {upper_bound[1], middle_mass[1], 2.0*m[1]};
