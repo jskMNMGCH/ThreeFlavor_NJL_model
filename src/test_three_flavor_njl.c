@@ -22,12 +22,12 @@ void initialize_parameters(int param_set) {
 }
 
 int main() {
-    initialize_parameters(0);
+    initialize_parameters(1);
 
     double T = 1.0;  // Temperature (MeV)
     double mu_start = 2e2;  // Starting chemical potential (MeV)
     double mu_end = 6e2;   // Ending chemical potential (MeV)
-    double mu_step = 1.0;    // Step size for chemical potential (MeV)
+    double mu_step = 4.0;    // Step size for chemical potential (MeV)
 
     double phi_sol[3];
     double M_sol[3];
@@ -65,7 +65,7 @@ int main() {
     for (double mu = mu_start; mu <= mu_end; mu += mu_step) {
         double mu_arr[3] = {mu, mu, mu};
 
-        status = solv_gap_eq_multi_guess(T, mu_arr, &M_sol);
+        status = solv_gap_eq_multi_guess_solver_restrict(T, mu_arr, &M_sol);
         calc_phi_multi_guess(T, mu_arr, M_sol, &phi_sol);
         fprintf(output_file, "%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\n",T,mu,M_sol[0],M_sol[1],M_sol[2],phi_sol[0],phi_sol[1],phi_sol[2]);
     }

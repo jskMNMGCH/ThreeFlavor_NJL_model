@@ -72,5 +72,7 @@ int calc_M(double phi_sol[3], double(* M_sol)[3]);
 int calc_phi(double M_sol[3], double(* phi_sol)[3]);
 double solv_gap_eq_multi_guess(double T, double mu[3], double(* M)[3]);
 int calc_phi_multi_guess(double T, double mu[3], double M_sol[3], double(* phi_sol)[3]);
+double solv_gap_eq_multi_guess_solver(double T, double mu[3], double(* M)[3]);
+double solv_gap_eq_multi_guess_solver_restrict(double T, double mu[3], double(* M)[3]);
 
 #endif /* THREE_FLAVOR_NJL_H */
